@@ -1,5 +1,6 @@
 package com.nazmul.polling.dto;
 
+import com.nazmul.polling.enums.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,4 +11,5 @@ public class UserDTO {
     private String email;
     private String firstName;
     private String lastName;
+    private UserRole userRole;
 }
