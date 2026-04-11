@@ -1,5 +1,6 @@
 package com.nazmul.polling.entity;
 
+import com.nazmul.polling.dto.UserDTO;
 import com.nazmul.polling.enums.UserRole;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +31,16 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
     private UserRole userRole;
+
+    public UserDTO getUserDTO(){
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(id);
+        userDTO.setFirstName(firstName);
+        userDTO.setLastName(lastName);
+        userDTO.setEmail(email);
+        userDTO.setUserRole(userRole);
+        return userDTO;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
