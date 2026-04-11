@@ -1,5 +1,6 @@
 package com.nazmul.polling.controller.auth;
 
+import com.nazmul.polling.dto.AuthenticationRequest;
 import com.nazmul.polling.dto.AuthenticationResponse;
 import com.nazmul.polling.dto.SignupRequest;
 import com.nazmul.polling.dto.UserDTO;
@@ -25,5 +26,11 @@ public class AuthController {
     public ResponseEntity<?> signupUser(@RequestBody SignupRequest signupRequest){
         AuthenticationResponse response = authService.signUp(signupRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody AuthenticationRequest authenticationRequest){
+        AuthenticationResponse response = authService.login(authenticationRequest);
+        return new ResponseEntity<>(response, HttpStatus.FOUND);
     }
 }
