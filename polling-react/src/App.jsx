@@ -1,22 +1,24 @@
-import { useState } from 'react'
-import './App.css'
-import Header from './pages/header/Header'
-import { Route, Routes } from 'react-router-dom'
-import Signup from './pages/auth/signup/Signup'
-import Login from './pages/auth/login/Login'
+import { useState } from "react";
+import "./App.css";
+import Header from "./pages/header/Header";
+import { Route, Routes } from "react-router-dom";
+import Signup from "./pages/auth/signup/Signup";
+import Login from "./pages/auth/login/Login";
+import Dashboard from "./user/Dashboard";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
-      <Header/>
+      <Header />
       <Routes>
-        <Route path='/register' element={<Signup/>}/>
-        <Route path='/login' element={<Login/>}/>
+        <Route path="/register" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

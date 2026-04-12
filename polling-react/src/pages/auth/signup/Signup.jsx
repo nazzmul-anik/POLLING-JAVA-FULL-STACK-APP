@@ -16,9 +16,14 @@ import {
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useSnackbar } from "notistack";
+import { signup } from "../Auth";
+import { saveToken } from "../../../utility/Common";
 
 const defaultTheme = createTheme();
+
 const Signup = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -35,11 +40,40 @@ const Signup = () => {
       [name]: value,
     });
   };
+
   const handleSubmit = async (e) => {
+    console.log("Inside submit");
+
     e.preventDefault();
     setLoading(true);
-    console.log(formData);
-    setLoading(false);
+
+    try {
+      const response = await signup(formData);
+
+      if (response.status == 201) {
+        const responseData = response.data;
+        saveToken(responseData.jwtToken);
+        navigate("/dashboard");
+        enqueueSnackbar(`Welcome ${responseData.name}`, {
+          variant: "success",
+          autoHideDuration: 5000,
+        });
+      }
+    } catch (error) {
+      if (error.response && error.response.status == 409) {
+        enqueueSnackbar("User already exists", {
+          variant: "error",
+          autoHideDuration: 5000,
+        });
+      } else {
+        enqueueSnackbar("Sign up failed!", {
+          variant: "error",
+          autoHideDuration: 5000,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -16,6 +16,9 @@ import {
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { login } from "../Auth";
+import { saveToken } from "../../../utility/Common";
+import { enqueueSnackbar } from "notistack";
 
 const defaultTheme = createTheme();
 const Login = () => {
@@ -33,12 +36,33 @@ const Login = () => {
       [name]: value,
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log(formData);
-    setLoading(false);
+
+    try {
+      const response = await login(formData);
+
+      if (response.status == 200) {
+        const responseData = response.data;
+        saveToken(responseData.jwtToken);
+        navigate("/dashboard");
+        enqueueSnackbar(`Welcome ${responseData.name}`, {
+          variant: "success",
+          autoHideDuration: 5000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("Sign in failed!", {
+        variant: "error",
+        autoHideDuration: 5000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
     <>
       <ThemeProvider theme={defaultTheme}>
