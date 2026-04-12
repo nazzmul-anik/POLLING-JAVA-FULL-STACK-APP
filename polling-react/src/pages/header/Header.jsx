@@ -61,10 +61,10 @@ const Header = () => {
                 <Button component={Link} to="/dashboard" color="inherit">
                   Dashboard
                 </Button>
-                <Button component={Link} to="/poll" color="inherit">
+                <Button component={Link} to="/poll/create" color="inherit">
                   Post Poll
                 </Button>
-                <Button component={Link} to="/my-polls" color="inherit">
+                <Button component={Link} to="/poll/my-poll" color="inherit">
                   My Polls
                 </Button>
                 <Button onClick={handleSignOut} color="inherit">
