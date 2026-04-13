@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
 import java.util.List;
@@ -23,8 +25,15 @@ public class Poll {
     private Date postedDate;
     private Date expiryDate;
     private Integer totalVoteCount = 0;
+    private Boolean isExpired = false;
 
     @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Options> options;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private User user;
 }

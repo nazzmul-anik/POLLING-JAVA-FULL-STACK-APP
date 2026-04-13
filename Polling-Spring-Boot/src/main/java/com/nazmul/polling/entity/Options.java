@@ -10,6 +10,8 @@ import org.hibernate.annotations.IdGeneratorType;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -27,5 +29,9 @@ public class Options {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Poll poll;
+
+    @OneToMany(mappedBy = "option", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Vote> voteList;
 
 }

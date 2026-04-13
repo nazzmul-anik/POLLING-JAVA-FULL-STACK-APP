@@ -18,5 +18,11 @@ public class PollDTO {
     private Date postedDate;
     private Date expiryDate;
     private Integer totalVoteCount = 0;
+    private Boolean isExpired;
     private List<String> options;
+
+    private Long userId;
+    private String username;
+    private List<OptionsDTO> optionsDTOS;
+    private Boolean voted;
 }

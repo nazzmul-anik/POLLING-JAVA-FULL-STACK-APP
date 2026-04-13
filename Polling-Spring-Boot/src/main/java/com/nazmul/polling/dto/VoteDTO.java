@@ -5,17 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OptionsDTO {
+public class VoteDTO {
     private Long id;
-    private String title;
+    private Long optionId;
     private Long pollId;
-    private Integer voteCount;
-    private boolean userVotedThisOption;
-    private List<VoteDTO> voteDTOS;
+    private Long postedBy;
 }
