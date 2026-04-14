@@ -15,6 +15,8 @@ import com.nazmul.polling.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +46,25 @@ public class PollServiceImpl implements PollService {
     @Override
     public void deletePollById(Long id) {
         pollRepository.deleteById(id);
+    }
+
+    @Override
+    public List<PollDTO> getAllPolls() {
+        return pollRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Poll::getPostedDate).reversed())
+                .map(this::getPollDTOInService)
+                .toList();
+    }
+
+    @Override
+    public List<PollDTO> getMyPolls() {
+        User user = getCurrentUser();
+        return pollRepository.findAllByUserId(user.getId())
+                .stream()
+                .sorted(Comparator.comparing(Poll::getPostedDate).reversed())
+                .map(this::getPollDTOInService)
+                .toList();
     }
 
     private User getCurrentUser(){
