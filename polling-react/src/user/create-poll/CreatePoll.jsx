@@ -28,7 +28,7 @@ const CreatePoll = () => {
   const [formData, setFormData] = useState({
     question: "",
     options: [],
-    expiredAt: null,
+    expiryDate: null,
   });
   const [loading, setLoading] = useState(false);
   // const { equeueSnackbar } = useSnackbar();
@@ -42,18 +42,18 @@ const CreatePoll = () => {
       const obj = {
         question: formData.question,
         options: formData.options,
-        expiredAt: formData.expiredAt,
+        expiryDate: formData.expiryDate,
       };
       const response = await postPoll(obj);
       if (response.status === 201) {
         navigate("/dashboard");
-        enqueueSnackbar(`Poll Post Successfully!!`, {
+        enqueueSnackbar(`Post a Poll Successfully !!`, {
           variant: "success",
           autoHideDuration: 5000,
         });
       }
     } catch (error) {
-      enqueueSnackbar("Sign in failed!", {
+      enqueueSnackbar(`Getting error while creating poll: ${error}`, {
         variant: "error",
         autoHideDuration: 5000,
       });
@@ -117,7 +117,7 @@ const CreatePoll = () => {
                   value.map((options, index) => (
                     <Chip
                       key={index}
-                      label={option}
+                      label={options}
                       {...getTagProps({ index })}
                     />
                   ));
@@ -135,9 +135,9 @@ const CreatePoll = () => {
               <DateTimePicker
                 sx={{ mt: 3, width: "70ch" }}
                 label="Expiration Date"
-                value={formData.expiredAt}
+                value={formData.expiryDate}
                 onChange={(date) =>
-                  setFormData({ ...formData, expiredAt: date })
+                  setFormData({ ...formData, expiryDate: date })
                 }
               />
 
@@ -147,7 +147,9 @@ const CreatePoll = () => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
                 disabled={
-                  !formData.question || !formData.options || !formData.expiredAt
+                  !formData.question ||
+                  !formData.options ||
+                  !formData.expiryDate
                 }
               >
                 {loading ? (
