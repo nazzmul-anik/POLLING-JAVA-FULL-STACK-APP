@@ -77,7 +77,8 @@ public class PollServiceImpl implements PollService {
         poll.setQuestion(pollDTO.getQuestion());
         Date now = new Date();
         poll.setPostedDate(now);
-        poll.setExpiryDate(new Date(now.getTime() + (5 * 60 * 1000)));
+//        poll.setExpiryDate(new Date(now.getTime() + (5 * 60 * 1000)));
+        poll.setExpiryDate(pollDTO.getExpiryDate());
         poll.setUser(user);
         poll.setTotalVoteCount(0);
         return poll;

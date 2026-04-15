@@ -22,7 +22,7 @@ public class PollController {
     @PostMapping("/poll")
     public ResponseEntity<?> postPoll(@RequestBody PollDTO pollDTO){
         PollDTO creatdPollDTO = pollService.postPoll(pollDTO);
-        return new ResponseEntity<>(creatdPollDTO, HttpStatus.OK);
+        return new ResponseEntity<>(creatdPollDTO, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/poll/{id}")
