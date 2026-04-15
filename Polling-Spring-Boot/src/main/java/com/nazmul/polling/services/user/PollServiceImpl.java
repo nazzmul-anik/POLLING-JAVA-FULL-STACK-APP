@@ -1,25 +1,23 @@
 package com.nazmul.polling.services.user;
 
-import com.nazmul.polling.dto.OptionsDTO;
-import com.nazmul.polling.dto.PollDTO;
-import com.nazmul.polling.entity.Options;
-import com.nazmul.polling.entity.Poll;
-import com.nazmul.polling.entity.User;
+import com.nazmul.polling.dto.*;
+import com.nazmul.polling.entity.*;
+import com.nazmul.polling.exceptions.OptionNotFoundException;
+import com.nazmul.polling.exceptions.PollNotFoundException;
 import com.nazmul.polling.exceptions.UserNotFoundException;
-import com.nazmul.polling.repository.OptionsRepository;
-import com.nazmul.polling.repository.PollRepository;
-import com.nazmul.polling.repository.VoteRepository;
+import com.nazmul.polling.repository.*;
 import com.nazmul.polling.services.email.EmailService;
 import com.nazmul.polling.utils.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +27,10 @@ public class PollServiceImpl implements PollService {
     private final PollRepository pollRepository;
     private final OptionsRepository optionsRepository;
     private final VoteRepository voteRepository;
-    private final JavaMailSender javaMailSender;
     private final EmailService emailService;
+    private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
+
 
     @Override
     public PollDTO postPoll(PollDTO pollDTO){
@@ -77,7 +77,6 @@ public class PollServiceImpl implements PollService {
         poll.setQuestion(pollDTO.getQuestion());
         Date now = new Date();
         poll.setPostedDate(now);
-//        poll.setExpiryDate(new Date(now.getTime() + (5 * 60 * 1000)));
         poll.setExpiryDate(pollDTO.getExpiryDate());
         poll.setUser(user);
         poll.setTotalVoteCount(0);
@@ -128,7 +127,87 @@ public class PollServiceImpl implements PollService {
         optionsDTO.setTitle(options.getTitle());
         optionsDTO.setPollId(options.getPoll().getId());
         optionsDTO.setUserVotedThisOption(
-                voteRepository. existsByPoll_IdAndUser_IdAndOption_Id(pollId, userId, options.getId()));
+                voteRepository.existsByPoll_IdAndUser_IdAndOption_Id(pollId, userId, options.getId()));
         return optionsDTO;
+    }
+
+    @Override
+    public LikeDTO giveLikeToPoll(Long pollId) {
+        Poll poll = getPoll(pollId);
+        User user = getCurrentUser();
+        Like like = new Like();
+        like.setUser(user);
+        like.setPoll(poll);
+        likeRepository.save(like);
+        return like.getLikeDTO();
+    }
+
+    @Override
+    public CommentDTO postCommentToPoll(CommentDTO commentDTO) {
+        User user = getCurrentUser();
+        Poll poll = getPoll(commentDTO.getPollId());
+        Comment comment = new Comment();
+        comment.setContent(commentDTO.getContent());
+        comment.setCommentDate(new Date());
+        comment.setUser(user);
+        comment.setPoll(poll);
+        return commentRepository.save(comment).getCommentDTO();
+    }
+
+    @Override
+    public VoteDTO postVoteOnPoll(VoteDTO voteDTO) {
+        User user = getCurrentUser();
+
+        Poll poll = getPoll(voteDTO.getPollId());
+        pollExpiryCheck(poll);
+        poll.setTotalVoteCount(poll.getTotalVoteCount() + 1);
+        Options options = getOption(voteDTO.getOptionId());
+        options.setVoteCount(options.getVoteCount() + 1);
+        Vote vote = new Vote();
+        vote.setUser(user);
+        vote.setPoll(poll);
+        vote.setOption(options);
+        vote.setPostedDate(new Date());
+        return voteRepository.save(vote).getVoteDTO();
+    }
+
+    @Override
+    public PollDetailsDTO getPollById(Long pollId) {
+        Poll poll = getPoll(pollId);
+        User user = getCurrentUser();
+        List<Like> likesList = likeRepository.findAllByPollId(pollId);
+        List<Comment> commentList = commentRepository.findAllByPollId(pollId);
+        PollDetailsDTO pollDetailsDTO = new PollDetailsDTO();
+        pollDetailsDTO.setPollDTO(getPollDTOInService(poll));
+        pollDetailsDTO.getPollDTO().setIsLiked(
+                likeRepository.findByPollIdAndUserId(pollId, user.getId()).isPresent());
+        pollDetailsDTO.setCommentDTOList(commentList.stream().map(
+                comment->{
+                    CommentDTO commentDTO = comment.getCommentDTO();
+                    if(comment.getUser().getId().equals(user.getId())){
+                        commentDTO.setUsername("YOU");
+                    }
+                    return commentDTO;
+                }
+        ).toList());
+        pollDetailsDTO.setLikeCount((long)likesList.size());
+        pollDetailsDTO.setCommentCount((long)commentList.size());
+        return pollDetailsDTO;
+    }
+
+    public void pollExpiryCheck(Poll poll){
+        if(poll.getExpiryDate().before(new Date())){
+            throw new PollNotFoundException(poll.getId()+" no. poll already expired!");
+        }
+    }
+
+    public Poll getPoll(Long pollId){
+        return pollRepository.findById(pollId)
+                .orElseThrow(()-> new PollNotFoundException(pollId+" no. this poll id is not found."));
+    }
+
+    public Options getOption(Long optionId){
+        return optionsRepository.findById(optionId)
+                .orElseThrow(()-> new OptionNotFoundException(optionId+", this option id is not found."));
     }
 }

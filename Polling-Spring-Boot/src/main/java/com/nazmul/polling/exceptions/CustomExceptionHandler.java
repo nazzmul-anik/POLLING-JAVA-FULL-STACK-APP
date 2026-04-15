@@ -26,4 +26,20 @@ public class CustomExceptionHandler {
         response.put("message", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(PollNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handlePollNotFoundException(
+            PollNotFoundException ex){
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(OptionNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleOptionNotFoundException(
+            OptionNotFoundException ex){
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 }

@@ -25,4 +25,5 @@ public class PollDTO {
     private String username;
     private List<OptionsDTO> optionsDTOS;
     private Boolean voted;
+    private Boolean isLiked;
 }

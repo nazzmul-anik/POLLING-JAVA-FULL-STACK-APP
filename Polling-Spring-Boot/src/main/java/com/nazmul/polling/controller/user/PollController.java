@@ -1,6 +1,6 @@
 package com.nazmul.polling.controller.user;
 
-import com.nazmul.polling.dto.PollDTO;
+import com.nazmul.polling.dto.*;
 import com.nazmul.polling.entity.Poll;
 import com.nazmul.polling.services.user.PollService;
 import lombok.AllArgsConstructor;
@@ -41,5 +41,29 @@ public class PollController {
     public ResponseEntity<?> getAllPolls(){
         List<PollDTO> allPolls = pollService.getAllPolls();
         return new ResponseEntity<>(allPolls, HttpStatus.OK);
+    }
+
+    @GetMapping("/poll/like/{id}")
+    public ResponseEntity<?> giveLikeToPoll(@PathVariable("id") Long pollId){
+        LikeDTO likeDTO = pollService.giveLikeToPoll(pollId);
+        return new ResponseEntity<>(likeDTO, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/poll/comment")
+    public ResponseEntity<?> postCommentOnPoll(@RequestBody CommentDTO commentDTO){
+        CommentDTO postedCommentDTO = pollService.postCommentToPoll(commentDTO);
+        return new ResponseEntity<>(postedCommentDTO, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/poll/vote")
+    public ResponseEntity<?> postVoteOnPoll(VoteDTO voteDTO){
+        VoteDTO postedVote = pollService.postVoteOnPoll(voteDTO);
+        return new ResponseEntity<>(postedVote, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/poll/{id}")
+    public ResponseEntity<?> getPollById(@PathVariable("id") Long pollId){
+        PollDetailsDTO pollDetailsDTO = pollService.getPollById(pollId);
+        return new ResponseEntity<>(pollDetailsDTO, HttpStatus.OK);
     }
 }
