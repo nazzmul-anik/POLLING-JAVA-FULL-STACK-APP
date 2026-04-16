@@ -56,7 +56,7 @@ public class PollController {
     }
 
     @PostMapping("/poll/vote")
-    public ResponseEntity<?> postVoteOnPoll(VoteDTO voteDTO){
+    public ResponseEntity<?> postVoteOnPoll(@RequestBody VoteDTO voteDTO){
         VoteDTO postedVote = pollService.postVoteOnPoll(voteDTO);
         return new ResponseEntity<>(postedVote, HttpStatus.CREATED);
     }

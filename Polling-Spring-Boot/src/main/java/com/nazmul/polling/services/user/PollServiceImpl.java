@@ -60,7 +60,7 @@ public class PollServiceImpl implements PollService {
     @Override
     public List<PollDTO> getMyPolls() {
         User user = getCurrentUser();
-        return pollRepository.findAllByUserId(user.getId())
+        return pollRepository.findAllByUser_Id(user.getId())
                 .stream()
                 .sorted(Comparator.comparing(Poll::getPostedDate).reversed())
                 .map(this::getPollDTOInService)
@@ -126,6 +126,7 @@ public class PollServiceImpl implements PollService {
         optionsDTO.setId(options.getId());
         optionsDTO.setTitle(options.getTitle());
         optionsDTO.setPollId(options.getPoll().getId());
+        optionsDTO.setVoteCount(options.getVoteCount());
         optionsDTO.setUserVotedThisOption(
                 voteRepository.existsByPoll_IdAndUser_IdAndOption_Id(pollId, userId, options.getId()));
         return optionsDTO;
@@ -175,12 +176,12 @@ public class PollServiceImpl implements PollService {
     public PollDetailsDTO getPollById(Long pollId) {
         Poll poll = getPoll(pollId);
         User user = getCurrentUser();
-        List<Like> likesList = likeRepository.findAllByPollId(pollId);
+        List<Like> likesList = likeRepository.findAllByPoll_Id(pollId);
         List<Comment> commentList = commentRepository.findAllByPollId(pollId);
         PollDetailsDTO pollDetailsDTO = new PollDetailsDTO();
         pollDetailsDTO.setPollDTO(getPollDTOInService(poll));
         pollDetailsDTO.getPollDTO().setIsLiked(
-                likeRepository.findByPollIdAndUserId(pollId, user.getId()).isPresent());
+                likeRepository.findByPoll_IdAndUser_Id(pollId, user.getId()).isPresent());
         pollDetailsDTO.setCommentDTOList(commentList.stream().map(
                 comment->{
                     CommentDTO commentDTO = comment.getCommentDTO();
