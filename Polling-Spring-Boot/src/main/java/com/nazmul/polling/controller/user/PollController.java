@@ -12,20 +12,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/polls")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class PollController {
 
     private final PollService pollService;
 
-    @PostMapping("/poll")
+    @PostMapping("/")
     public ResponseEntity<?> postPoll(@RequestBody PollDTO pollDTO){
         PollDTO creatdPollDTO = pollService.postPoll(pollDTO);
         return new ResponseEntity<>(creatdPollDTO, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/poll/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePoll(@PathVariable Long id){
         pollService.deletePollById(id);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -37,31 +37,31 @@ public class PollController {
         return new ResponseEntity<>(myPolls, HttpStatus.OK);
     }
 
-    @GetMapping("/polls")
+    @GetMapping("/")
     public ResponseEntity<?> getAllPolls(){
         List<PollDTO> allPolls = pollService.getAllPolls();
         return new ResponseEntity<>(allPolls, HttpStatus.OK);
     }
 
-    @GetMapping("/poll/like/{id}")
+    @GetMapping("/like/{id}")
     public ResponseEntity<?> giveLikeToPoll(@PathVariable("id") Long pollId){
         LikeDTO likeDTO = pollService.giveLikeToPoll(pollId);
         return new ResponseEntity<>(likeDTO, HttpStatus.CREATED);
     }
 
-    @PostMapping("/poll/comment")
+    @PostMapping("/comment")
     public ResponseEntity<?> postCommentOnPoll(@RequestBody CommentDTO commentDTO){
         CommentDTO postedCommentDTO = pollService.postCommentToPoll(commentDTO);
         return new ResponseEntity<>(postedCommentDTO, HttpStatus.CREATED);
     }
 
-    @PostMapping("/poll/vote")
+    @PostMapping("/vote")
     public ResponseEntity<?> postVoteOnPoll(@RequestBody VoteDTO voteDTO){
         VoteDTO postedVote = pollService.postVoteOnPoll(voteDTO);
         return new ResponseEntity<>(postedVote, HttpStatus.CREATED);
     }
 
-    @GetMapping("/poll/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getPollById(@PathVariable("id") Long pollId){
         PollDetailsDTO pollDetailsDTO = pollService.getPollById(pollId);
         return new ResponseEntity<>(pollDetailsDTO, HttpStatus.OK);
