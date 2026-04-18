@@ -6,6 +6,9 @@ This project demonstrates modern backend engineering practices (JWT security, la
 
 ---
 
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/ced079ea-2301-4f7a-9640-50df6a6693ee" />
+
+
 ## 🚀 Tech Stack
 
 ### 🔧 Backend
