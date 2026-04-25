@@ -13,7 +13,7 @@ This project demonstrates modern backend engineering practices (JWT security, la
 
 ### 🔧 Backend
 
-* Java 17+
+* Java 25
 * Spring Boot
 * Spring Security (JWT Authentication)
 * Spring Data JPA (Hibernate)
